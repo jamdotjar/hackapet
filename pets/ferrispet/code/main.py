@@ -35,10 +35,10 @@ ferris_sprite = displayio.TileGrid(
 )
 ferris_sprite[0] = 3
 
-frame = 0
+
 dialoge = 1
 question = None
-lives = 3
+lives = 999
 life_progress = 0
 
 ferris_dialoge = [
@@ -315,7 +315,6 @@ def handle_answer(answer, question):
 	next()
 
 
-
 font = bitmap_font.load_font("9x18b.bdf")
 text_area = label.Label(font, text="", color=0x000000, line_spacing=0.75)
 text_area.x = 2
@@ -357,17 +356,25 @@ def win():
 	clear_options()
 	text_area.text = "You did it!\nCongrats!"
 	ferris_sprite[0] = 10
-	pygame.time.wait(3000)
-	pygame.quit()
-	exit()
+	if lives > 50:
+		text_area.text = "You win!\nFerris is happy!\nScore: " + str(lives-999) + "\n\nTo access hard\nmode press \nonly 'C' on\nthe main\nscreen "
+	else:
+		text_area.text = "You win!\nFerris is happy!\nScore: " + str(lives)
+	black_screen()
+	while True:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				exit()
+			elif event.type == pygame.KEYDOWN:
+				main()
 def lose():
 	clear_options()
 	text_boxes_sprite.y = -128
 	text_area.text = "You lost!\nFerris is sad!"
 	ferris_sprite[0] = 9
 	pygame.time.wait(3000)
-	pygame.quit()
-	exit()
+	intro()
 
 def next():
 	global question
@@ -392,44 +399,59 @@ def next():
 
 
 def intro():
-		global lives
-		#set screen to black
-		# animate cargo run being typed out
-		ferris_sprite.x = -64
-		text_area.color = 0xFFFFFF
-		typed = 0
+	
+	black_screen()
+	typed = 0
+	global lives
+	lives = 999
+	dialoge = 0
+	text_area.text = ""
 		# wait for input
-		while True:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					pygame.quit()
-					exit()
-				elif event.type == pygame.KEYDOWN:
-						if typed <= len("cargo run"):
-							text_area.text += "cargo run "[typed]
-							display.refresh(minimum_frames_per_second=1)
-							typed += 1
-						elif typed > len("cargo_run"):
-							if event.key == pygame.K_c:
-								lives = 3
-								print(lives)
-							else:
-								lives = 999
-							break
-			else:
-					continue
-			break
-		text_area.y = 5
-		text_area.color = 0x000000
-		bg_sprite.y = 0
-		ferris_sprite.x = 32
-		text_area.text = ferris_dialoge[0]
+	while True:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				exit()
+			elif event.type == pygame.KEYDOWN:
+					if typed <= len("cargo run"):
+						text_area.text += "cargo run "[typed]
+						display.refresh(minimum_frames_per_second=1)
+						typed += 1
+					elif typed > len("cargo_run"):
+						if event.key == pygame.K_c:
+							lives = 3
+							print(lives)
+						else:
+							lives = 999
+						break
+		else:
+				continue
+		break
+	text_area.y = 5
+	text_area.color = 0x000000
+	bg_sprite.y = 0
+	ferris_sprite.x = 32
+	text_area.text = ferris_dialoge[0]
+
+def black_screen():
+	global lives
+	global dialoge
+	# set screen to black
+	ferris_sprite.x = -64
+	dialoge = 1
+	bg_sprite.y = -128
+	text_area.color = 0xFFFFFF
 
 def main():
+	black_screen()
 	intro() 
+	
+	global question
+	question = None
+	global life_progress
+	life_progress = 0
 
 	while True:
-		
 		if question is not None:
 			text_boxes_sprite.y = 0
 			pass
