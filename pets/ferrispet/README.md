@@ -18,4 +18,5 @@ You have 3 lives, and if you lose them all, you'll have to start over. But don't
 - <kbd>X</kbd> - Select option 1
 - <kbd>C</kbd> - Select option 2
 
+This project was made for [hackapet](https://hackapet.hackclub.com/)
 ![Ferris](ref/Ferrisbrows.png)
